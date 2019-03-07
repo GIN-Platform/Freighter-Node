@@ -1,0 +1,31 @@
+{
+  "name": "gincoin-freighter-daemon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "babel src",
+    "build": "babel src -d dist"
+  },
+  "author": "GIN Foundation",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "connect": "^3.6.6",
+    "diskusage": "^1.0.0",
+    "is-valid-domain": "0.0.7",
+    "jayson": "^2.1.2",
+    "node-docker-api": "^1.1.22",
+    "socket.io-client": "^2.2.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.4",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.3.4",
+    "@babel/register": "^7.0.0",
+    "babel-polyfill": "^6.26.0",
+    "mocha": "^6.0.2",
+    "nodemon": "^1.18.10"
+  }
+}
