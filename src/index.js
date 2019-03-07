@@ -56,12 +56,6 @@ const checkGincoin = async () => {
     }
 
     try {
-        await gincoin.validateAddress(localConfig.address)
-    } catch (e) {
-        common.abort(e)
-    }
-
-    try {
         await gincoin.exec('masternode', ['status'])
     } catch (e) {
         common.abort(new Error('this is not a masternode'))
