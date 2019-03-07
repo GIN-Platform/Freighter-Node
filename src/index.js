@@ -1,3 +1,4 @@
+import '@babel/polyfill'
 import Freighter from './services/Freighter'
 import Gincoin from './services/Gincoin'
 import Docker from './services/Docker'
