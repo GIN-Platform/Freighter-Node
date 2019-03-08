@@ -21,10 +21,12 @@ git clone https://github.com/GIN-Platform/Freighter-Node.git freighter
 cd freighter
 npm install
 
-#launch freighter in dev mode
+# launch freighter in dev mode
+# CTRL+C after successful launch
+#  - [freighter] [>] ACK data={"event":"FStatus","changed":true}
 node ./node_modules/@babel/node/bin/babel-node.js src/
 
-## Build and run as daemon
+# build and run as daemon
 npm install -g forever
 npm run build
 forever start dist/
