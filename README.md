@@ -42,6 +42,7 @@ The configuration file defaults to `~/.freighter/config.json` and can be overrid
 | domain | DNS name that resolves to the GIN masternode IPv4 address | null |
 | id | ID of the Freighter obtained from DAM after FRegister | null |
 | secret | Secret used by the Freighter to authenticate itself, obtained from DAM after FRegister | null |
+| preferred_server | Name of the preferred server to connect to | null |
 
 The starter configuration could look like this:
 

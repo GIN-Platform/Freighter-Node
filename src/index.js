@@ -91,8 +91,10 @@ const startNetwork = async (freighter) => {
 
 const findLowestLatencyServer = async () => {
     let best = null
+    const preferred = localConfig.preferred_server
+    const serverList = preferred ? config.servers.filter(s => s.name === preferred) : config.servers
 
-    for (let server of config.servers) {
+    for (let server of serverList) {
         try {
             const result = await getServerLatency(server)
 
