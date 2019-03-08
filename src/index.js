@@ -14,7 +14,7 @@ const localConfig = common.loadLocalConfig()
 
 const checkOs = () => {
     if (os.platform().indexOf('win') === 0) {
-        abort('win32 support is not yet available')
+        common.abort('win32 support is not yet available')
     }
 }
 
@@ -81,6 +81,8 @@ const startNetwork = async (freighter) => {
     socket = result.socket
 
     socket.on('disconnect', async () => {
+        common.log('disconnected')
+        
         if (freighter.connected) {
             await startNetwork(freighter)
         }

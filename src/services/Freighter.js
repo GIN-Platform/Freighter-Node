@@ -201,8 +201,10 @@ export default class Freighter {
         //do nothing
     }
     
-    receiveFError() {
-        //do nothing
+    receiveFError(data) {
+        if (data.type === 410) {
+            common.abort('another connection detected')
+        }
     }
     
     send(event, data) {
