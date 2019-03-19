@@ -15,11 +15,7 @@ export default class Freighter {
         this.connected = false
         this.socket = socket
         
-        if (this.statusInterval) {
-            clearInterval(this.statusInterval)
-            this.statusInterval = null
-        }
-        
+        this.resetStatusInterval()
         this.listenForEvents()
         this.connectOrRegister()
     }
@@ -44,6 +40,8 @@ export default class Freighter {
                 }
             })
         }
+        
+        this.socket.on('disconnect', () => this.resetStatusInterval())
     }
     
     connectOrRegister() {
@@ -211,5 +209,12 @@ export default class Freighter {
     send(event, data) {
         common.log(`[<] ${event}`)
         this.socket.emit(event, data)
+    }
+    
+    resetStatusInterval() {
+        if (this.statusInterval) {
+            clearInterval(this.statusInterval)
+            this.statusInterval = null
+        }
     }
 }
