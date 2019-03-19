@@ -17,6 +17,7 @@ export default class Freighter {
         
         if (this.statusInterval) {
             clearInterval(this.statusInterval)
+            this.statusInterval = null
         }
         
         this.listenForEvents()
