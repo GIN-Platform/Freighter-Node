@@ -200,6 +200,10 @@ export default class Freighter {
         //do nothing
     }
     
+    receiveFQoS() {
+        //do nothing
+    }
+    
     receiveFError(data) {
         if (data.type === 410) {
             common.abort('another connection detected')
