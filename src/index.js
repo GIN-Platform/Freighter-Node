@@ -84,7 +84,9 @@ const startNetwork = async (freighter) => {
         common.log('disconnected')
         
         if (freighter.connected) {
-            await startNetwork(freighter)
+            const ms = Math.ceil(Math.random() * 60 * 1000)
+            common.log(`reconnecting after ${Math.floor(ms / 1000)} seconds`)
+            setTimeout(() => startNetwork(freighter), ms)
         }
     })
 

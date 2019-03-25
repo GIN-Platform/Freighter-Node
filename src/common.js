@@ -6,7 +6,7 @@ const delay = (duration) =>
     new Promise(resolve => setTimeout(resolve, duration))
 
 const log = (message) =>
-    console.log(`[${(new Date()).toISOString()}]${message}`.replace(/\]\w+\[/g, ']['))
+    console.log(`[${(new Date()).toISOString()}] ${message}`.replace(/\]\w+\[/g, ']['))
 
 const abort = (message) => {
     console.error(`[error] ${message}`)
