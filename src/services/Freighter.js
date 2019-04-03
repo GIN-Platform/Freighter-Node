@@ -3,11 +3,13 @@ import os from 'os'
 import diskusage from 'diskusage'
 import config from '../config'
 import common from '../common'
+import CargoBroker from "./CargoBroker"
 
 export default class Freighter {
     constructor(localConfig, gincoin) {
         this.localConfig = localConfig
         this.statusInterval = null
+        this.garbageInterval = null
         this.gincoin = gincoin
     }
     
@@ -15,8 +17,9 @@ export default class Freighter {
         this.connected = false
         this.socket = socket
         
-        this.resetStatusInterval()
+        this.resetIntervals()
         this.listenForEvents()
+        this.connectCargoBroker()
         this.connectOrRegister()
     }
     
@@ -41,7 +44,7 @@ export default class Freighter {
             })
         }
         
-        this.socket.on('disconnect', () => this.resetStatusInterval())
+        this.socket.on('disconnect', () => this.resetIntervals())
     }
     
     connectOrRegister() {
@@ -131,6 +134,10 @@ export default class Freighter {
         this.send('FCordon', { cordoned_status: !!this.localConfig.cordoned_status })
     }
     
+    CResult(data) {
+        this.send('CResult', data)
+    }
+    
     async FStatus() {
         const disk = diskusage.checkSync('/')
         const getinfo = await this.gincoin.exec('getinfo')
@@ -144,6 +151,15 @@ export default class Freighter {
             masternodeStatus = await this.gincoin.exec('masternode', ['status'])
         } catch (e) {
             masternodeStatus = -1
+        }
+        
+        let cargo
+
+        try {
+            cargo = (await CargoBroker.getInstance().list()) || []
+        } catch (e) {
+            cargo = []
+            console.error(e)
         }
         
         this.send('FStatus', {
@@ -164,11 +180,16 @@ export default class Freighter {
                 asset_id: mnsyncStatus.AssetID,
                 masternode_status: masternodeStatus.status
             },
-            cargo: []
+            cargo: cargo
         })
         
         if (!this.statusInterval) {
             this.statusInterval = setInterval(() => this.FStatus(), config.status_interval)
+        }
+        
+        if (!this.garbageInterval) {
+            this.cargoBroker.garbageCollect()
+            this.garbageInterval = setInterval(() => this.cargoBroker.garbageCollect(), config.garbage_collector_interval)
         }
     }
     
@@ -204,6 +225,10 @@ export default class Freighter {
         //do nothing
     }
     
+    receiveCDeploy(data) {
+        CargoBroker.getInstance().hasOrDeploy(data)
+    }
+    
     receiveFError(data) {
         if (data.type === 410) {
             common.abort('another connection detected')
@@ -215,10 +240,27 @@ export default class Freighter {
         this.socket.emit(event, data)
     }
     
+    connectCargoBroker() {
+        this.cargoBroker = CargoBroker.getInstance()
+        this.cargoBroker.setResultCallback((data) => this.CResult(data))
+    }
+    
     resetStatusInterval() {
         if (this.statusInterval) {
             clearInterval(this.statusInterval)
             this.statusInterval = null
         }
+    }
+    
+    resetGarbageInterval() {
+        if (this.garbageInterval) {
+            clearInterval(this.garbageInterval)
+            this.garbageInterval = null
+        }
+    }
+    
+    resetIntervals() {
+        this.resetStatusInterval()
+        this.resetGarbageInterval()
     }
 }

@@ -15,7 +15,7 @@ const abort = (message) => {
 }
 
 const loadLocalConfig = () => {
-    const file = config.config_file
+    const file = config.config_path + '/config.json'
 
     if (!fs.existsSync(file)) {
         log(`creating config file: ${file}`)
@@ -44,13 +44,20 @@ const loadLocalConfig = () => {
 }
 
 const writeLocalConfig = (configToWrite) => {
-    fs.writeFileSync(config.config_file, JSON.stringify(configToWrite, null, 4))
+    fs.writeFileSync(config.config_path + '/config.json', JSON.stringify(configToWrite, null, 4))
 }
+
+const promisifyStream = (stream, verbose = false) => new Promise((resolve, reject) => {
+    stream.on('data', (d) => verbose && console.log(d))
+    stream.on('end', resolve)
+    stream.on('error', reject)
+})
 
 export default {
     delay,
     log,
     abort,
     loadLocalConfig,
-    writeLocalConfig
+    writeLocalConfig,
+    promisifyStream
 }

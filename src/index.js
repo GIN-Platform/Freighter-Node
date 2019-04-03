@@ -20,7 +20,7 @@ const checkOs = () => {
 
 const checkDocker = async () => {
     try {
-        docker = new Docker(config.docker_socket)
+        docker = Docker.getInstance()
     } catch (e) {
         common.abort(`failed connecting to the Docker daemon`)
     }

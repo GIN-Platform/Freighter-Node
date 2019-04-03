@@ -16,6 +16,7 @@
     "diskusage": "^1.0.0",
     "is-valid-domain": "0.0.7",
     "jayson": "^2.1.2",
+    "moment": "^2.24.0",
     "node-docker-api": "^1.1.22",
     "socket.io-client": "^2.2.0"
   },
