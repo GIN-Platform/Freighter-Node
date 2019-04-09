@@ -96,6 +96,7 @@ export default class CargoBroker {
                 }
                 
                 this.resultCallback && this.resultCallback({
+                    id: cargo.id,
                     exit_code: status.ExitCode,
                     error: status.Error,
                     oom: status.OOMKilled,
