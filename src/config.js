@@ -11,6 +11,6 @@ export default {
         {name: 'dev1', endpoint: 'http://localhost:9080'},
     ],
     status_interval: process.env.FREIGHTER_STATUS_INTERVAL || 300 * 1000,
-    garbage_collector_interval: process.env.FREIGHTER_GARBAGE_COLLECTOR_INTERVAL || 300 * 1000,
+    garbage_collector_interval: process.env.FREIGHTER_GARBAGE_COLLECTOR_INTERVAL || 60 * 1000,
     dam_prefix: process.env.DAM_PREFIX || 'gp_',
 }
