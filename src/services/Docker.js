@@ -49,7 +49,7 @@ export default class Docker {
         const imageArr = image.split(':')
         const stream = await this.client.image.create({}, { fromImage: imageArr[0], tag: imageArr[1] || 'latest' })
         await (common.promisifyStream(stream))
-        const status = await this.client.image.get('ubuntu').status()
+        const status = await this.client.image.get(image).status()
         
         if (!status) {
             throw new Error(`could not pull image ${image}`)
