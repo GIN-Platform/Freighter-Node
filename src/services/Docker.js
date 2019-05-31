@@ -40,7 +40,7 @@ export default class Docker {
     
     async rm(name) {
         log(`removing container ${name}`)
-        await (await this.getContainer(name)).delete()
+        await (await this.getContainer(name)).delete({ force: true })
     }
     
     async pull(image) {
@@ -54,6 +54,17 @@ export default class Docker {
         if (!status) {
             throw new Error(`could not pull image ${image}`)
         }
+    }
+    
+    async rename(oldName, newName) {
+        log(`renaming ${oldName} to ${newName}`)
+        const container = await this.getContainer(oldName)
+        
+        if (!container) {
+            throw new Error(`Can not find container ${oldName}`)
+        }
+        
+        await container.rename({ name: newName })
     }
     
     static getName(container) {

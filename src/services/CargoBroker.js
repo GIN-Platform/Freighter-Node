@@ -73,6 +73,27 @@ export default class CargoBroker {
         }
     }
     
+    async renew(data) {
+        if (!(await this.has(data.id))) {
+            return common.log(`no cargo with ID ${data.id}`)
+        }
+        
+        const cargo = await this.get(data.id)
+        const containerName = getContainerName(cargo.type, cargo.id, cargo.expires_at)
+        const newContainerName = getContainerName(cargo.type, cargo.id, data.expires_at)
+        
+        if (containerName === newContainerName) {
+            return common.log(`cargo ${data.id} already renewed`)
+        }
+
+        try {
+            await docker.rename(containerName, newContainerName)
+        } catch (e) {
+            common.log(e)
+            common.log(`could not rename`)
+        }
+    }
+    
     async garbageCollect() {
         for (let cargo of (await this.list())) {
             let status, container
@@ -87,21 +108,35 @@ export default class CargoBroker {
                 continue
             }
             
-            if (status.Status === 'exited' && !status.Restarting) {
+            const cleanup = async () => {
+                //cleanup job
                 try {
                     await docker.rm(containerName)
                 } catch (e) {
                     console.error(e)
                     log(`can not remove container for ${containerName}`)
                 }
-                
-                this.resultCallback && this.resultCallback({
-                    id: cargo.id,
-                    exit_code: status.ExitCode,
-                    error: status.Error,
-                    oom: status.OOMKilled,
-                    run_seconds: moment(status.FinishedAt).diff(moment(status.StartedAt), 'seconds')
-                })
+            }
+            
+            switch (cargo.type) {
+                case 'job':
+                    if (status.Status === 'exited' && !status.Restarting) {
+                        await cleanup()
+
+                        this.resultCallback && this.resultCallback({
+                            id: cargo.id,
+                            exit_code: status.ExitCode,
+                            error: status.Error,
+                            oom: status.OOMKilled,
+                            run_seconds: moment(status.FinishedAt).diff(moment(status.StartedAt), 'seconds')
+                        })
+                    }
+                    break
+                case 'daemon':
+                    if (moment(cargo.expires_at).isBefore(moment())) {
+                        await cleanup()
+                    }
+                    break
             }
         }
     }

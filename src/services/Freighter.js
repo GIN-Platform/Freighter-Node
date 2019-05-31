@@ -229,6 +229,11 @@ export default class Freighter {
         CargoBroker.getInstance().hasOrDeploy(data)
     }
     
+    async receiveCRenew(data) {
+        await CargoBroker.getInstance().renew(data)
+        await this.FStatus()
+    }
+    
     receiveFError(data) {
         if (data.type === 410) {
             common.abort('another connection detected')
