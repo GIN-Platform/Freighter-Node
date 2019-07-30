@@ -29,7 +29,7 @@ node ./node_modules/@babel/node/bin/babel-node.js src/
 # build and run as daemon
 npm install -g forever
 npm run build
-forever start dist/
+forever start -a --uid freighter dist/
 ```
 
 ## Configuration
